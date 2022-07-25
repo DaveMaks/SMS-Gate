@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+####!/bin/bash -x
+#
+# Source function library.
+. /lib/lsb/init-functions
+
+### BEGIN INIT INFO
+# Provides:          sms-gate
+# Required-Start:    $all
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Track pi.
+# Description:       This service for send SMS from site.
+### END INIT INFO
+
+service_name="SMS_Gate"
+folder="/srv/sms-gate"
+start() {
+ echo "Starting $service_name"
+ $folder/run.sh &
+}
+stop() {
+ echo "Stopping $service_name"
+ killall python
+}
+status() {
+ if (( $(ps -ef | grep -v grep | grep $service_name | wc -l) > 0 )); then
+     echo "$service_name is running!!!"
+ else
+     echo "$service_name is down!!!"
+ fi
+}
+case $1 in
+  start|stop|status) $1;;
+  restart) stop; start;;
+  *) echo "Usage : $0 <start|stop|restart>"; exit 1;;
+esac
